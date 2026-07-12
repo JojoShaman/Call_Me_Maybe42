@@ -1,9 +1,11 @@
 [project]
-name = "cmm"
+name = "CallMeMaybe"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.12"
+description = "Function calling program"
+author = [
+    {name = "Sorin Rosu", email = "srosu@student.42belgium.be"}
+]
+requires-python = ">=3.10"
 dependencies = [
     "numpy>=2.5.1",
     "pydantic>=2.13.4",
