@@ -2,11 +2,18 @@
 name = "CallMeMaybe"
 version = "0.1.0"
 description = "Function calling program"
-author = [
+authors = [
     {name = "Sorin Rosu", email = "srosu@student.42belgium.be"}
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.14"
 dependencies = [
+    "llm-sdk",
     "numpy>=2.5.1",
     "pydantic>=2.13.4",
 ]
+
+[tool.uv.sources]
+llm-sdk = { path = "llm_sdk", editable = true}
+
+[dependency-groups]
+dev = ["flake8", "mypy"]
