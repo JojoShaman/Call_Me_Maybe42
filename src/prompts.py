@@ -1,0 +1,52 @@
+from .models import FuncDef
+import json
+from typing import Any
+EXAMPLES: list[tuple[str, str, dict[str, Any]]] = [
+    ("Say hello to Brian", "fn_say_hello(person: string)",
+        {"name": "fn_say_hello", "parameters": {"person": "Brian"}}),
+    ("What is 7 times 12?", "fn_multiply(x: number, y: number)",
+        {"name": "fn_multiply", "parameters": {"x": 7.0, "y": 12.0}}),
+    ("Replace every digit in 'r2d2' with '#'",
+        "fn_replace(text: string, regex: string, replacement: string)",
+        {"name": "fn_replace", "parameters":
+         {"text": "r2d2", "regex": r"\d", "replacement": "#"}}),
+    ("Change the word 'red' to 'blue' in 'red car, redwood'",
+        "fn_replace(text: string, regex: string, replacement: string)",
+        {"name": "fn_replace", "parameters":
+         {"text": "red car, redwood", "regex": r"\bred\b",
+          "replacement": "blue"}}),
+    ("Replace uppercase letters in 'HeLLo' with dashes",
+        "fn_replace(text: string, regex: string, replacement: string)",
+        {"name": "fn_replace", "parameters":
+         {"text": "HeLLo", "regex": "[A-Z]", "replacement": "-"}}),
+    ("Replace all letters in 'Ab3Cd' with question marks",
+        "fn_replace(text: string, regex: string, replacement: string)",
+        {"name": "fn_replace", "parameters":
+         {"text": "Ab3Cd", "regex": "[a-zA-Z]", "replacement": "?"}}),
+    ("Replace the word 'is' with 'was' in 'This is it'",
+        "fn_replace(text: string, regex: string, replacement: string)",
+        {"name": "fn_replace", "parameters":
+         {"text": "This is it", "regex": r"\bis\b", "replacement": "was"}})]
+
+
+def param_prompt(prompt: str, definition: FuncDef) -> str:
+    shots = "\n\n".join(
+        f"prompt: {a}\nfunction: {b}\nanswer: {json.dumps(c)}"
+        for a, b, c in EXAMPLES)
+    p = (', '.join(f'{a}: {b.type}'
+                   for a, b in definition.parameters.items()))
+    func = (f'{definition.name}' + f'({p})')
+    return ("Extract the arguments of the function call from the prompt. "
+            "Copy values from the prompt; when a symbol is named "
+            "(asterisks, dashes, underscores...), write the "
+            "symbol itself.\n\n"
+            f"{shots}\n\n"
+            f"prompt: {prompt}\n"
+            f"function: {func}\n"
+            f'answer: {{"name": "{definition.name}", "parameters": {{')
+
+
+def func_prompt(scope: str, prompt: str) -> str:
+    return (f"Target: {scope}\n"
+            f"Question: {prompt}\n"
+            'Answer: {"name": "')

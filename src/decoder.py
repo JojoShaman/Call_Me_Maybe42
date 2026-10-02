@@ -1,10 +1,10 @@
 from pydantic import BaseModel, ConfigDict, PrivateAttr
 from llm_sdk import Small_LLM_Model
-from .data import Data
 from typing import Any, Callable
 import json
-from .utils import CallMeError
+from .errors import CallMeError
 import numpy as np
+
 
 class Decoder(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -14,7 +14,7 @@ class Decoder(BaseModel):
 
     def model_post_init(self, context: Any) -> None:
         path = self.model.get_path_to_vocab_file()
-        with open(path) as f:
+        with open(path, encoding='utf-8') as f:
             vocab: dict[str, int] = json.load(f)
         self._id_to_token = {
             id_token: self.model.decode([id_token])
@@ -43,4 +43,4 @@ class Decoder(BaseModel):
             ids.append(best)
             ret += self._id_to_token[best]
             i += 1
-        return(ret)    
+        return (ret)

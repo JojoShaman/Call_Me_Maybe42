@@ -3,8 +3,11 @@ from pydantic import (
     TypeAdapter,
     ValidationError)
 from .models import PromptItem, FuncDef
-from .utils import load_json, CallMeError
+from .errors import CallMeError, describe
+from .io_utils import load_json
 from pathlib import Path
+from collections import Counter
+
 
 class Data(BaseModel):
     prompts: list[str]
@@ -15,13 +18,23 @@ class Data(BaseModel):
         try:
             items = TypeAdapter(
                 list[PromptItem]).validate_python(load_json(p_path))
+        except ValidationError as e:
+            raise CallMeError(
+                f"Invalid structure in {p_path}:\n{describe(e)}")
+        try:
             definitions = TypeAdapter(
                 list[FuncDef]).validate_python(load_json(f_path))
         except ValidationError as e:
-            raise CallMeError(f"Error - Invalid input file structure:\n{e}")
+            raise CallMeError(
+                f"Invalid structure in {f_path}:\n{describe(e)}")
         if not definitions:
-            raise CallMeError("No function defined")
+            raise CallMeError(f"No function defined in {f_path}")
         func: dict[str, FuncDef] = {f.name: f for f in definitions}
-        if len(func) != len(definitions):
-           raise CallMeError("Duplicate function names")
+        names: list[str] = [f.name for f in definitions]
+        duplicates: list[str] = sorted(
+            n for n, count in Counter(names).items() if count > 1)
+        if duplicates:
+            raise CallMeError(
+                f"Duplicate function names in {f_path}: "
+                f"{', '.join(duplicates)}")
         return cls(prompts=[i.prompt for i in items], function=func)

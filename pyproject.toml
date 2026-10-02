@@ -7,6 +7,7 @@ authors = [
 ]
 requires-python = ">=3.14"
 dependencies = [
+    "flake8-pyproject>=1.2.4",
     "llm-sdk",
     "numpy>=2.5.1",
     "pydantic>=2.13.4",
@@ -16,4 +17,14 @@ dependencies = [
 llm-sdk = { path = "llm_sdk", editable = true}
 
 [dependency-groups]
-dev = ["flake8", "mypy"]
+dev = ["flake8", "mypy", "Flake8-pyproject"]
+
+[tool.mypy]
+exclude = ["llm_sdk/"]
+
+[[tool.mypy.overrides]]
+module = ["llm_sdk", "llm_sdk.*"]
+follow_imports = "skip"
+
+[tool.flake8]
+exclude = [".venv", "llm_sdk", "__pycache__", ".mypy_cache"]
