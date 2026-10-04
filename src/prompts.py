@@ -1,3 +1,4 @@
+"""Prompt templates and few-shot examples sent to the model."""
 from .models import FuncDef
 import json
 from typing import Any
@@ -15,6 +16,16 @@ EXAMPLES: list[tuple[str, str, dict[str, Any]]] = [
 
 
 def param_prompt(prompt: str, definition: FuncDef) -> str:
+    """Build the prompt used to extract the arguments of a function.
+
+    Args:
+        prompt: The natural language request.
+        definition: The definition of the selected function.
+
+    Returns:
+        The few-shot prompt, ending at the opening of the parameters
+        object.
+    """
     shots = "\n\n".join(
         f"prompt: {a}\nfunction: {b}\nanswer: {json.dumps(c)}"
         for a, b, c in EXAMPLES)
@@ -32,6 +43,15 @@ def param_prompt(prompt: str, definition: FuncDef) -> str:
 
 
 def func_prompt(scope: str, prompt: str) -> str:
+    """Build the prompt used to choose a function.
+
+    Args:
+        scope: The description of every available function.
+        prompt: The natural language request.
+
+    Returns:
+        The prompt, ending right before the function name.
+    """
     return (f"Target: {scope}\n"
             f"Question: {prompt}\n"
             'Answer: {"name": "')

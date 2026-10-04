@@ -1,3 +1,4 @@
+"""Entry point: turn natural language prompts into function calls."""
 import sys
 try:
     from llm_sdk import Small_LLM_Model
@@ -22,8 +23,16 @@ except ImportError as e:
           "Run the program with 'uv run python -m src'.", file=sys.stderr)
     sys.exit(1)
 
-
 def main() -> int:
+    """Run the whole program and return its exit code.
+
+    Parses the command line, loads the input files and the model,
+    processes every prompt and writes the output file.
+
+    Returns:
+        0 when the output file was written, 1 when an error prevented
+        it, 130 when the user interrupted the program.
+    """
     try:
         args = arguments()
         out = args.output.resolve()

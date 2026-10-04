@@ -1,9 +1,16 @@
+"""Command line interface of the program."""
 from pathlib import Path
 import argparse
 from argparse import Namespace
 
 
 def arguments() -> Namespace:
+    """Parse the command line arguments.
+
+    Returns:
+        A namespace with the paths ``functions_definition``, ``input``
+        and ``output``, each falling back to its default location.
+    """
     parser = argparse.ArgumentParser(
         description="Translate natural language prompts into function calls."
     )

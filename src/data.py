@@ -1,3 +1,4 @@
+"""Loading and validation of the two input files."""
 from pydantic import (
     BaseModel,
     TypeAdapter,
@@ -10,11 +11,32 @@ from collections import Counter
 
 
 class Data(BaseModel):
+    """Validated content of the input files.
+
+    Attributes:
+        prompts: The prompts to process, in file order.
+        function: The available functions, indexed by name.
+    """
     prompts: list[str]
     function: dict[str, FuncDef]
 
     @classmethod
     def open_files(cls, p_path: Path, f_path: Path) -> "Data":
+        """Build a Data instance from the two input files.
+
+        Args:
+            p_path: Path of the JSON file holding the prompts.
+            f_path: Path of the JSON file holding the function
+                definitions.
+
+        Returns:
+            The validated prompts and function definitions.
+
+        Raises:
+            CallMeError: If a file cannot be read, is not valid JSON,
+                has an invalid structure, defines no function or
+                defines the same function name twice.
+        """
         try:
             items = TypeAdapter(
                 list[PromptItem]).validate_python(load_json(p_path))

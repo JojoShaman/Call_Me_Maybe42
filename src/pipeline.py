@@ -1,3 +1,4 @@
+"""Processing of every prompt, from function choice to validation."""
 from pydantic import BaseModel, PrivateAttr, ValidationError
 from .data import Data
 from .decoder import Decoder
@@ -10,6 +11,14 @@ from typing import Any
 
 
 class Pipeline(BaseModel):
+    """Turn every prompt into a validated function call.
+
+    Attributes:
+        data: The prompts and the function definitions.
+        deco: The decoder used to tokenise the prompts.
+        param: The argument extractor.
+        function: The function selector.
+    """
     data: Data
     deco: Decoder
     param: ExtractParameter
@@ -18,11 +27,24 @@ class Pipeline(BaseModel):
         default_factory=dict)
 
     def model_post_init(self, context: Any) -> None:
+        """Build one argument validator per function.
+
+        Args:
+            context: Pydantic context, unused.
+        """
         self._validators = {
             name: params_model(f) for name, f in self.data.function.items()
         }
 
     def run(self) -> list[FunctionCall]:
+        """Process the prompts one by one.
+
+        A prompt that fails is reported on stderr and skipped, so the
+        others are still processed.
+
+        Returns:
+            The valid function calls, in prompt order.
+        """
         prompts = self.data.prompts
         scope = '.\n'.join(
             [f"if task is {f.description}, "
