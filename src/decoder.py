@@ -24,10 +24,16 @@ class Decoder(BaseModel):
         return list(self.model.encode(text).tolist()[0])
 
     def generate(self, ids: list[int], is_done: Callable[[str], bool],
-                 is_valid: Callable[[str], bool], max_token: int = 50) -> str:
+                 is_valid: Callable[[str], bool], max_token: int = 50,
+                 complete: Callable[[str], str | None] | None = None) -> str:
         i = 0
         ret: str = ''
         while not is_done(ret):
+            if complete is not None:
+                final = complete(ret)
+                if final is not None:
+                    ids.extend(self.encode(final[len(ret):]))
+                    return final
             if i >= max_token:
                 raise CallMeError(
                     f"Generation stop after {max_token} "
@@ -38,7 +44,7 @@ class Decoder(BaseModel):
                 if is_valid(ret + token):
                     allowed[id_token] = scores[id_token]
             if np.all(allowed == -np.inf):
-                raise CallMeError(f"no valid token to continue (got {ret!r})")
+                raise CallMeError(f"no valid token to continue (got {ret!r}).")
             best = int(np.argmax(allowed))
             ids.append(best)
             ret += self._id_to_token[best]

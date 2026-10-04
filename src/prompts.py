@@ -4,29 +4,14 @@ from typing import Any
 EXAMPLES: list[tuple[str, str, dict[str, Any]]] = [
     ("Say hello to Brian", "fn_say_hello(person: string)",
         {"name": "fn_say_hello", "parameters": {"person": "Brian"}}),
-    ("What is 7 times 12?", "fn_multiply(x: number, y: number)",
-        {"name": "fn_multiply", "parameters": {"x": 7.0, "y": 12.0}}),
     ("Replace every digit in 'r2d2' with '#'",
         "fn_replace(text: string, regex: string, replacement: string)",
         {"name": "fn_replace", "parameters":
          {"text": "r2d2", "regex": r"\d", "replacement": "#"}}),
-    ("Change the word 'red' to 'blue' in 'red car, redwood'",
-        "fn_replace(text: string, regex: string, replacement: string)",
-        {"name": "fn_replace", "parameters":
-         {"text": "red car, redwood", "regex": r"\bred\b",
-          "replacement": "blue"}}),
     ("Replace uppercase letters in 'HeLLo' with dashes",
         "fn_replace(text: string, regex: string, replacement: string)",
         {"name": "fn_replace", "parameters":
-         {"text": "HeLLo", "regex": "[A-Z]", "replacement": "-"}}),
-    ("Replace all letters in 'Ab3Cd' with question marks",
-        "fn_replace(text: string, regex: string, replacement: string)",
-        {"name": "fn_replace", "parameters":
-         {"text": "Ab3Cd", "regex": "[a-zA-Z]", "replacement": "?"}}),
-    ("Replace the word 'is' with 'was' in 'This is it'",
-        "fn_replace(text: string, regex: string, replacement: string)",
-        {"name": "fn_replace", "parameters":
-         {"text": "This is it", "regex": r"\bis\b", "replacement": "was"}})]
+         {"text": "HeLLo", "regex": "[A-Z]", "replacement": "-"}})]
 
 
 def param_prompt(prompt: str, definition: FuncDef) -> str:

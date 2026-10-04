@@ -1,5 +1,10 @@
-from pydantic import BaseModel, ConfigDict, Field, create_model
-from typing import Literal, Any
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    create_model,
+    field_validator)
+from typing import Literal, Any, Annotated
 
 ParamType = Literal['string', 'number', 'boolean']
 PY_TYPES: dict[str, type[Any]] = {
@@ -7,6 +12,7 @@ PY_TYPES: dict[str, type[Any]] = {
     'number': float,
     'boolean': bool
 }
+ID = Annotated[str, Field(pattern='^[A-Za-z_][A-Za-z0-9_]*$')]
 
 
 class ParamDef(BaseModel):
@@ -14,19 +20,26 @@ class ParamDef(BaseModel):
 
 
 class FuncDef(BaseModel):
-    name: str
+    name: ID
     description: str
-    parameters: dict[str, ParamDef]
+    parameters: dict[ID, ParamDef]
 
 
 class PromptItem(BaseModel):
     prompt: str
 
+    @field_validator('prompt')
+    @classmethod
+    def check_prompt(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("prompt must not be empty")
+        return value
+
 
 class FunctionCall(BaseModel):
     model_config = ConfigDict(extra='forbid')
     prompt: str
-    name: str
+    name: ID
     parameters: dict[str, Any]
 
 

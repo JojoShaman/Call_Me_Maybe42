@@ -24,7 +24,7 @@ def split_string(text: str) -> tuple[str, str] | None:
             continue
         if c == '"':
             return text[:i], text[i:]
-        if c < " ":
+        if c < " " or c == "\ufffd":
             return None
         i += 1
     return text, ""
@@ -66,6 +66,15 @@ def bool_validator(end: str) -> Rule:
     return (is_done, is_valid)
 
 
+def bool_complete(end: str) -> Callable[[str], str | None]:
+    def complete(text: str) -> str | None:
+        if not text:
+            return None
+        left = [w for w in BOOLEANS if w.startswith(text)]
+        return left[0] + end if len(left) == 1 else None
+    return complete
+
+
 def to_string(text: str, _end: str) -> str:
     parts = split_string(text)
     if parts is None:
@@ -91,4 +100,8 @@ CONVERT: dict[str, Callable[[str, str], Any]] = {
     'string': to_string,
     'number': to_number,
     'boolean': to_boolean
+}
+
+COMPLETE: dict[str, Callable[[str], Callable[[str], str | None]]] = {
+    'boolean': bool_complete
 }

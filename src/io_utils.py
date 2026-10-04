@@ -15,7 +15,7 @@ def load_json(path: Path) -> Any:
         raise CallMeError(
             f"invalid json in {path} at line {e.lineno}: {e.msg}")
     except (OSError, UnicodeDecodeError) as e:
-        raise CallMeError(f"unable to read {path}: {e}")
+        raise CallMeError(f"unable to read {path} - {e}")
 
 
 def write_output(path: Path, calls: list[FunctionCall]) -> None:
@@ -26,4 +26,4 @@ def write_output(path: Path, calls: list[FunctionCall]) -> None:
             json.dump(file, f, indent=2, ensure_ascii=False, allow_nan=False)
     except OSError as e:
         raise CallMeError(
-            f'Cannot write {path}: {e}')
+            f'cannot write {path} - {e}')

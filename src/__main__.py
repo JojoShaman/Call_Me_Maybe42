@@ -9,6 +9,9 @@ try:
     from .decoder import Decoder
     from .extractors import ExtractParameter, SelectFunction
     from .pipeline import Pipeline
+except KeyboardInterrupt:
+    print("Program interrupted by user.", file=sys.stderr)
+    sys.exit(130)
 except ModuleNotFoundError as e:
     missing = getattr(e, "name", None) or str(e)
     print(f'Error: missing dependency "{missing}". '
@@ -23,9 +26,17 @@ except ImportError as e:
 def main() -> int:
     try:
         args = arguments()
+        out = args.output.resolve()
+        if out in (args.input.resolve(),
+                   args.functions_definition.resolve()):
+            raise CallMeError(
+                f"--output would overwrite an input file: {args.output}")
         d = Data.open_files(args.input, args.functions_definition)
         start_time = perf_counter()
-        m = Small_LLM_Model()
+        try:
+            m = Small_LLM_Model()
+        except Exception as e:
+            raise CallMeError(f"cannot load the model: {e}")
         decoder = Decoder(model=m)
         pipeline = Pipeline(
             data=d, deco=decoder,
@@ -38,7 +49,7 @@ def main() -> int:
         print(f"Error: {e}", file=sys.stderr)
         return 1
     except KeyboardInterrupt:
-        print('program interrupted by user', file=sys.stderr)
+        print('Program interrupted by user.', file=sys.stderr)
         return 130
     except Exception as e:
         print(f'Unexpected error occurred: {e}', file=sys.stderr)

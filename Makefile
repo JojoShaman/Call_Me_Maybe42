@@ -5,7 +5,7 @@ run:
 	uv run python3 -m src
 
 debug:
-	uv run python3 -m pdb
+	uv run python3 -m pdb -m src
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} +

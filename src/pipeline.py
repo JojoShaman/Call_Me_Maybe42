@@ -40,12 +40,12 @@ class Pipeline(BaseModel):
                     self._validators[func_name].model_validate(params)
                 except ValidationError as e:
                     raise CallMeError(
-                        f'Invalid arguments for {func_name!r}:\n{describe(e)}')
+                        f'invalid arguments for {func_name!r}:\n{describe(e)}')
                 func_call = FunctionCall(
                     prompt=p, name=func_name, parameters=params)
                 print(f"[{i}/{len(prompts)}] {func_call.prompt} "
-                      f"-> {func_call.name}\n{func_call.parameters}")
-                print()
+                      f"-> {func_call.name}\n{func_call.parameters}\n",
+                      file=sys.stderr)
                 ret.append(func_call)
             except CallMeError as e:
                 print(
