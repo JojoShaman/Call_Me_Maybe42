@@ -8,8 +8,8 @@ Rule = tuple[Callable[[str], bool], Callable[[str], bool]]
 
 ESCAPES: set[str] = set('"\\/bfnrt')
 BOOLEANS: list[str] = ['true', 'false']
-NB_COMPLETE: re.Pattern[str] = re.compile(r"-?\d+(\.\d+)?")
-NB_PARTIAL: re.Pattern[str] = re.compile(r"-?\d*(\.\d*)?")
+NB_COMPLETE: re.Pattern[str] = re.compile(r" ?-?\d+(\.\d+)?")
+NB_PARTIAL: re.Pattern[str] = re.compile(r" ?-?\d*(\.\d*)?")
 
 
 def split_string(text: str) -> tuple[str, str] | None:
