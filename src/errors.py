@@ -5,6 +5,7 @@ from pydantic import ValidationError
 class CallMeError(Exception):
     """Expected error carrying a message meant for the user."""
 
+
 def describe(e: ValidationError) -> str:
     """Turn a validation error into one readable line per problem.
 

@@ -23,6 +23,7 @@ except ImportError as e:
           "Run the program with 'uv run python -m src'.", file=sys.stderr)
     sys.exit(1)
 
+
 def main() -> int:
     """Run the whole program and return its exit code.
 
