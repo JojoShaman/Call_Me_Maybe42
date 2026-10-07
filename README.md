@@ -165,8 +165,8 @@ as the replacement. Constrained decoding guarantees the form of the output
 **Speed.** On my personal machine (MacBook, Apple M4, 16 GB of RAM), the 11
 prompts take about 32 seconds. This depends on the machine and on the number
 of tokens to process.
-
-<!-- TODO: add the time measured on a 42 machine -->
+On a 42 machine (CPU Only | Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz)
+, the same 11 prompts take about 3 minutes 33 seconds, under the 5-minute limit of the subject.
 
 The SDK keeps no cache between two calls, so each generated token makes the
 model process the whole prompt again. The cost of a prompt is roughly its
