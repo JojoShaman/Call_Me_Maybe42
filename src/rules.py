@@ -13,6 +13,7 @@ NB_PARTIAL: re.Pattern[str] = re.compile(r" ?-?\d*(\.\d*)?")
 INT_COMPLETE: re.Pattern[str] = re.compile(r" ?-?\d+")
 INT_PARTIAL: re.Pattern[str] = re.compile(r" ?-?\d*")
 
+
 def split_string(text: str) -> tuple[str, str] | None:
     """Split a generated string value at its closing quote.
 
@@ -98,6 +99,7 @@ def number_validator(end: str) -> Rule:
         return NB_PARTIAL.fullmatch(text) is not None
     return (is_done, is_valid)
 
+
 def integer_validator(end: str) -> Rule:
     """Build the rules of an integer value.
 
@@ -117,7 +119,6 @@ def integer_validator(end: str) -> Rule:
             return INT_COMPLETE.fullmatch(text[:-len(end)]) is not None
         return INT_PARTIAL.fullmatch(text) is not None
     return (is_done, is_valid)
-
 
 
 def bool_validator(end: str) -> Rule:
@@ -191,6 +192,7 @@ def to_number(text: str, end: str) -> float:
     """
     return float(text.removesuffix(end))
 
+
 def to_integer(text: str, end: str) -> int:
     """Convert a generated number value into a float.
 
@@ -202,6 +204,7 @@ def to_integer(text: str, end: str) -> int:
         The number as a float.
     """
     return int(text.removesuffix(end))
+
 
 def to_boolean(text: str, end: str) -> bool:
     """Convert a generated boolean value into a bool.

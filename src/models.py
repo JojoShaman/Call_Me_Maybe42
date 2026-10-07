@@ -7,7 +7,7 @@ from pydantic import (
     field_validator)
 from typing import Literal, Any, Annotated
 
-ParamType = Literal['string', 'number', 'integer','boolean']
+ParamType = Literal['string', 'number', 'integer', 'boolean']
 PY_TYPES: dict[str, type[Any]] = {
     'string': str,
     'number': float,
