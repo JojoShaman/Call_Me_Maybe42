@@ -84,7 +84,7 @@ class ExtractParameter(BaseModel):
                 raise CallMeError(f"unsupported type: {info.type!r}")
             quote = '"' if info.type == 'string' else ''
             end = quote + ('}' if is_last else ',')
-            if info.type == 'number':
+            if info.type in ('number', 'integer'):
                 fixed = f'{sep}"{name}":'
             else:
                 fixed = f'{sep}"{name}": {quote}'

@@ -7,10 +7,11 @@ from pydantic import (
     field_validator)
 from typing import Literal, Any, Annotated
 
-ParamType = Literal['string', 'number', 'boolean']
+ParamType = Literal['string', 'number', 'integer','boolean']
 PY_TYPES: dict[str, type[Any]] = {
     'string': str,
     'number': float,
+    'integer': int,
     'boolean': bool
 }
 ID = Annotated[str, Field(pattern='^[A-Za-z_][A-Za-z0-9_]*$')]

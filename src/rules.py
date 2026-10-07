@@ -10,7 +10,8 @@ ESCAPES: set[str] = set('"\\/bfnrt')
 BOOLEANS: list[str] = ['true', 'false']
 NB_COMPLETE: re.Pattern[str] = re.compile(r" ?-?\d+(\.\d+)?")
 NB_PARTIAL: re.Pattern[str] = re.compile(r" ?-?\d*(\.\d*)?")
-
+INT_COMPLETE: re.Pattern[str] = re.compile(r" ?-?\d+")
+INT_PARTIAL: re.Pattern[str] = re.compile(r" ?-?\d*")
 
 def split_string(text: str) -> tuple[str, str] | None:
     """Split a generated string value at its closing quote.
@@ -84,6 +85,27 @@ def number_validator(end: str) -> Rule:
         return NB_PARTIAL.fullmatch(text) is not None
     return (is_done, is_valid)
 
+def integer_validator(end: str) -> Rule:
+    """Build the rules of an integer value.
+
+    Args:
+        end: The text that must close the value.
+
+    Returns:
+        The ``is_done`` and ``is_valid`` functions, in that order.
+    """
+    def is_done(text: str) -> bool:
+        """Tell whether the number is followed by the expected end."""
+        return text.endswith(end)
+
+    def is_valid(text: str) -> bool:
+        """Tell whether the text can still become a valid integer."""
+        if text.endswith(end):
+            return INT_COMPLETE.fullmatch(text[:-len(end)]) is not None
+        return INT_PARTIAL.fullmatch(text) is not None
+    return (is_done, is_valid)
+
+
 
 def bool_validator(end: str) -> Rule:
     """Build the rules of a boolean value.
@@ -156,6 +178,17 @@ def to_number(text: str, end: str) -> float:
     """
     return float(text.removesuffix(end))
 
+def to_integer(text: str, end: str) -> int:
+    """Convert a generated number value into a float.
+
+    Args:
+        text: The generated text, with its closing delimiter.
+        end: The closing delimiter to remove.
+
+    Returns:
+        The number as a float.
+    """
+    return int(text.removesuffix(end))
 
 def to_boolean(text: str, end: str) -> bool:
     """Convert a generated boolean value into a bool.
@@ -173,12 +206,14 @@ def to_boolean(text: str, end: str) -> bool:
 RULES: dict[str, Callable[[str], Rule]] = {
     'string': string_validator,
     'number': number_validator,
+    'integer': integer_validator,
     'boolean': bool_validator
 }
 
 CONVERT: dict[str, Callable[[str, str], Any]] = {
     'string': to_string,
     'number': to_number,
+    'integer': to_integer,
     'boolean': to_boolean
 }
 
