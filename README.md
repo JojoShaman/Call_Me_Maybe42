@@ -69,10 +69,10 @@ The dependencies and the model need several gigabytes, more than the home
 quota. These variables move everything to `sgoinfre`:
 
 ```bash
-export UV_CACHE_DIR="/sgoinfre/<login>/uv-cache"
-export UV_PROJECT_ENVIRONMENT="/sgoinfre/<login>/callmemaybe-venv"
-export UV_PYTHON_INSTALL_DIR="/sgoinfre/<login>/uv-python"
-export HF_HOME="/sgoinfre/<login>/huggingface"
+export UV_CACHE_DIR="/sgoinfre/students/<login>/uv-cache"
+export UV_PROJECT_ENVIRONMENT="/sgoinfre/students/<login>/callmemaybe-venv"
+export UV_PYTHON_INSTALL_DIR="/sgoinfre/students/<login>/uv-python"
+export HF_HOME="/sgoinfre/students/<login>/huggingface"
 ```
 
 ## Algorithm explanation
