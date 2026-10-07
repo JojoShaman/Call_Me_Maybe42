@@ -84,10 +84,10 @@ class ExtractParameter(BaseModel):
                 raise CallMeError(f"unsupported type: {info.type!r}")
             quote = '"' if info.type == 'string' else ''
             end = quote + ('}' if is_last else ',')
-            if info.type in ('number', 'integer'):
-                fixed = f'{sep}"{name}":'
-            else:
-                fixed = f'{sep}"{name}": {quote}'
+            # if info.type in ('number', 'integer'):
+            #     fixed = f'{sep}"{name}":'
+            # else:
+            fixed = f'{sep}"{name}":'
             maker = COMPLETE.get(info.type)
             limit = len(self.decoder.encode(prompt)) + 20
             ids.extend(self.decoder.encode(fixed))

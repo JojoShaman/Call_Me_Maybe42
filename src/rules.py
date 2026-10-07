@@ -50,14 +50,27 @@ def string_validator(end: str) -> Rule:
     Returns:
         The ``is_done`` and ``is_valid`` functions, in that order.
     """
+    def body(text: str) -> str | None:
+        """Return what follows the opening quote, None if absent."""
+        text = text.removeprefix(" ")
+        return text[1:] if text[:1] == '"' else None
+
     def is_done(text: str) -> bool:
         """Tell whether the string is closed by the expected end."""
-        parts = split_string(text)
+        inner = body(text)
+        if inner is None:
+            return False
+        parts = split_string(inner)
         return parts is not None and parts[1] == end
 
     def is_valid(text: str) -> bool:
         """Tell whether the text can still become a valid string."""
-        parts = split_string(text)
+        if text in ("", " "):
+            return True
+        inner = body(text)
+        if inner is None:
+            return False
+        parts = split_string(inner)
         content = parts[0] if parts else ""
         if content[:1] == " " and content.strip():
             return False
@@ -160,7 +173,7 @@ def to_string(text: str, _end: str) -> str:
     Raises:
         CallMeError: If the text is not a valid JSON string.
     """
-    parts = split_string(text)
+    parts = split_string(text.removeprefix(" ")[1:])
     if parts is None:
         raise CallMeError(f"invalid string generated: {text!r}")
     return str(json.loads(f'"{parts[0]}"'))
