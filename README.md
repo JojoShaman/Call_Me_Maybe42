@@ -110,6 +110,7 @@ Each parameter type has its own rule:
 - **string**: any text up to the closing quote, with valid JSON escapes only
   (`\"`, `\\`, `\n`...). Raw control characters are rejected.
 - **number**: an optional minus sign, digits, and an optional decimal part.
+- **integer**: an optional minus sign and digits.
 - **boolean**: only a prefix of `true` or `false`.
 
 For the function name, a text is valid if it is the beginning of an existing
